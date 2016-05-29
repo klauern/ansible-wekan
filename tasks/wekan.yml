@@ -1,0 +1,29 @@
+---
+# tasks file for setting up Wekan.io
+- name: install node, npm
+  apt:
+    name="{{ item }}"
+    state=present
+  with_items:
+  - nodejs
+  - npm
+- name: NPM install 'n'
+  npm: name="{{ item }}" global=yes state=present
+  with_items:
+  - n
+- name: install node 0.10.40 per Wekan req's
+  shell: n 0.10.40
+- name: download wekan
+  get_url: url=https://github.com/wekan/wekan/releases/download/v0.10.1/wekan-0.10.1.tar.gz dest=/var/lib/wekan/wekan-0.10.1.tar.gz
+- name: unarchive wekan
+  unarchive: src=/var/lib/wekan/wekan-0.10.1.tar.gz dest=/var/lib/wekan/
+- name: install wekan npm deps
+  shell: chdir=/var/lib/wekan/bundle/programs/server npm install
+- name: change ownership all over /var/lib/wekan
+  file: path=/var/lib/wekan owner={{wekan_user}} group={{wekan_group}} recurse=yes state=directory mode=0777
+- name: create systemd service
+  template: src=./templates/wekan.service.j2 dest=/etc/systemd/system/wekan.service mode=0644 owner=root group=root
+- name: enable wekan.service
+  service: name=wekan enabled=yes
+- name: start wekan.service
+  service: name=wekan state=started

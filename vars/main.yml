@@ -1,0 +1,13 @@
+---
+# vars file for wekan
+wekan_port: 8080
+wekan_url: wekan.nickklauer.info
+wekan_mail_user: wekan@mailgun.nickklauer.info
+wekan_mail_pass:
+wekan_mail_host: smtp.mailgun.org
+wekan_mail_port: 25
+wekan_mail_from: wekan@mailgun.nickklauer.info
+
+wekan_user: wekan
+wekan_group: wekan
+wekan_mongodb_user: mongodb

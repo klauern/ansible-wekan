@@ -1,0 +1,31 @@
+---
+# tasks file for setting up a MongoDB server as a single-node with a replica.
+- name: add mongodb keyserver
+  apt_key: keyserver=keyserver.ubuntu.com id=EA312927
+- name: add mongodb trusty repositories to xenial (backwards compat. until MongoDB upgrades their package manager)
+  apt_repository: repo='deb http://repo.mongodb.org/apt/ubuntu trusty/mongodb-org/3.2 multiverse' state=present update_cache=yes
+- name: install wekan dependencies
+  apt:
+    name="{{ item }}"
+    state=present
+  with_items:
+  - mongodb-org
+  - make
+  - g++
+  - gcc
+  - build-essential
+  - libssl-dev
+- name: create systemd service
+  template: src=./templates/mongodb.service.j2 dest=/etc/systemd/system/mongodb.service mode=0644 owner=root group=root
+- name: template mongod.conf (with replication)
+  template: src=./templates/mongod.conf dest=/etc/mongod.conf mode=0644 owner=root group=root
+- name: enable mongodb service
+  service: name=mongodb enabled=yes
+- name: start mongodb service
+  service: name=mongodb state=started
+- name: template out mongo.js startup script
+  template: src=./templates/setup_mongodb.js.j2 dest=/tmp/setup_mongodb.js mode=0644 owner=root group=root
+- name: initiate replication set
+  shell: mongo --host 127.0.1.1 /tmp/setup_mongodb.js
+- name: cleanup
+  file: path=/tmp/setup_mongodb.js state=absent

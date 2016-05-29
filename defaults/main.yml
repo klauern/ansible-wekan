@@ -1,0 +1,9 @@
+---
+# defaults file for wekan
+wekan_mongodb_storage_dbPath: /var/lib/mongodb
+wekan_mongodb_systemLog_destination: file
+wekan_mongodb_systemLog_logAppend: true
+wekan_mongodb_systemLog_path: /var/log/mongodb/mongod.log
+wekan_mongodb_net_port: 27017
+wekan_mongodb_net_bindIp: 127.0.1.1
+wekan_mongodb_replication_replSetName: "001-rs"

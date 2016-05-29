@@ -1,0 +1,24 @@
+[Unit]
+Description=Wekan.io (Trello Clone)
+Documentation=https://wekan.io/
+After=syslog.target
+After=network.target
+After=mongodb.service
+
+[Service]
+Type=simple
+Restart=always
+StandardOutput=syslog
+SyslogIdentifier=Wekan
+User={{ wekan_user }}
+Group={{ wekan_group }}
+Environment=MONGO_URL=mongodb://{{wekan_mongodb_net_bindIp}}:{{wekan_mongodb_net_port}}/wekan
+Environment=ROOT_URL=https://{{wekan_url}}
+Environment=MAIL_URL=smtp://{{wekan_mail_user}}:{{wekan_mail_pass}}@{{wekan_mail_host}}:{{wekan_mail_port}}
+Environment=MAIL_FROM={{wekan_mail_from}}
+Environment=PORT={{wekan_port}}
+WorkingDirectory=/var/lib/wekan/bundle
+ExecStart=/usr/local/n/versions/node/0.10.40/bin/node /var/lib/wekan/bundle/main.js
+
+[Install]
+WantedBy=multi-user.target

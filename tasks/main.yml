@@ -1,0 +1,5 @@
+---
+# main tasks
+- include: mongodb.yml
+- include: wekan.yml
+
